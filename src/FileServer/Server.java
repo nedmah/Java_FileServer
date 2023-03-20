@@ -23,16 +23,16 @@ public class Server {
         createDirectory(path);
 
         try (ServerSocket server = new ServerSocket(PORT)) {
-            System.out.println("Сервер запущен и готов работать.");
+            System.out.println("Server started");
 
-            while (isRunning) {
-                String response = "";
-                String id = "";
                 try (
                         Socket socket = server.accept();
                         DataInputStream input = new DataInputStream(socket.getInputStream());
                         DataOutputStream output = new DataOutputStream(socket.getOutputStream())
                 ) {
+                    while (isRunning){
+                        String response = "";
+                        String id = "";
                     String message = input.readUTF();
                     if (message.equals("exit")) {
                         input.close();
@@ -69,6 +69,7 @@ public class Server {
                                     response = "200" + " " + id;
                                 }
                                 output.writeUTF(response);
+                                path = path.replace(message.split(";")[1],"");
                                 break;
 
 
@@ -117,6 +118,7 @@ public class Server {
                                         output.writeUTF(response);
                                     }
                                 }
+                                path = path.replace(message.split(";")[2],"");
                                 break;
 
 
@@ -131,10 +133,12 @@ public class Server {
                                 if (f.exists() && !f.isDirectory()) {
                                     response = "200";
                                     delete(path);
+                                    filenames.remove(path);
                                 } else {
                                     response = "403";
                                 }
                                 output.writeUTF(response);
+                                path = path.replace(message.split(";")[2],"");
                                 break;
                         }
                         output.flush();

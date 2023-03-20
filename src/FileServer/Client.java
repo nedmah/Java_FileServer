@@ -6,6 +6,7 @@ import java.net.SocketException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class Client {
@@ -24,7 +25,7 @@ public class Client {
         String filename = "";
 
         while (isRunning) {
-            System.out.println("Enter action (1 - get a file, 2 - save a file, 3 - delete a file): ");
+            System.out.println("Enter action (1 - get a file, 2 - save a file, 3 - delete a file, exit - stop the process): ");
             String action = scan.nextLine();
             switch (action) {
                 case "1":
@@ -61,6 +62,8 @@ public class Client {
                     output.write(data);
                     response = input.readUTF();
                     processResponse(response, action);
+                    String pathUpdate = path.getParent().toString();
+                    path = Path.of(pathUpdate);
                     break;
 
                 case "3":
@@ -80,7 +83,7 @@ public class Client {
                 }
             }
         }
-        
+
 
 
 
@@ -124,6 +127,7 @@ public class Client {
         }
         return "DELETE" + ";" + mode + ";" + name;
     }
+
 
     public static Boolean processResponse(String response, String operation) {
         switch (operation) {
